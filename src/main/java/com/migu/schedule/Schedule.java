@@ -142,6 +142,8 @@ public class Schedule {
             }
         });
         // 先给id小的节点分配消耗率大的任务，超出平均值则给下一个节点分配
+        Map<Integer, Integer> simulationtaskQueue = new HashMap<Integer, Integer>();
+        Map<Integer, List<Integer>> simulationtaskExecute = new HashMap<Integer, List<Integer>>();
         Map<Integer, List<Integer>> simulationnodes = new HashMap<Integer, List<Integer>>();
         for (Integer nodeId : nodeIds) {
             List<Integer> taskIds = new ArrayList<Integer>();
@@ -157,11 +159,33 @@ public class Schedule {
                     consumptions += consumption;
                     taskIds.add(id);
                     removeTasks.add(map);
+                    List<Integer> list = new ArrayList<Integer>();
+                    list.add(nodeId);
+                    list.add(consumption);
+                    simulationtaskExecute.put(id, list);
                 }
             }
             simulationnodes.put(nodeId, taskIds);
             tasks.removeAll(removeTasks);
         }
+        int inxde = 0;
+        for (int i = nodeIds.size() - 1; i >= 0; i--) {
+            if (tasks.get(inxde) != null) {
+                int id = 0;
+                for (Integer taskId : tasks.get(inxde).keySet()) {
+                    id = taskId;
+                }
+                List<Integer> taskIds = simulationnodes.get(nodeIds.get(i));
+                taskIds.add(id);
+                simulationnodes.put(nodeIds.get(i), taskIds);
+            }
+        }
+        if (1 == 1) {
+
+        }
+        nodes = simulationnodes;
+        taskQueue = simulationtaskQueue;
+        taskExecute = simulationtaskExecute;
         return ReturnCodeKeys.E013;
     }
 
